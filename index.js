@@ -1,12 +1,12 @@
 /**
- * tFunk for colours/compiler
+ * Import chalk for colors
  */
-var chalk = require("chalk");
+import chalk from "chalk";
 
 /**
  * Lodash clonedeep & merge
  */
-var _ = require("./lodash.custom");
+import _ from "./lodash.custom.js";
 
 /**
  * Default configuration.
@@ -275,4 +275,4 @@ function strOrFn(input) {
     throw new Error("unreachable");
 }
 
-module.exports.Logger  = Logger;
+export { Logger };

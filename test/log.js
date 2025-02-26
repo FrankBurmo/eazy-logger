@@ -1,11 +1,11 @@
-var assert      = require("chai").assert;
-var sinon       = require("sinon");
-var easyLogger  = require("../index");
-var stripColor  = require("strip-ansi");
-var chalk       = require("chalk");
+import { assert } from "chai";
+import { spy as _spy, assert as _assert } from "sinon";
+import { Logger } from "../index";
+import stripColor from "strip-ansi";
+import { blue, magenta, cyan } from "chalk";
 
 var defaultConfig = {
-    prefix: `${chalk.blue("[")}${chalk.magenta("logger")}${chalk.cyan("]")} `,
+    prefix: `${blue("[")}${magenta("logger")}${cyan("]")} `,
     prefixes: {
         debug: "DEBUG ",
         info:  "INFO ",
@@ -27,10 +27,10 @@ var arg = function (spy, num, argNum) {
 describe("Logging", function(){
     var spy, logger;
     before(function () {
-        spy = sinon.spy(console, "log");
+        spy = _spy(console, "log");
     });
     beforeEach(function () {
-        logger = easyLogger.Logger(defaultConfig);
+        logger = Logger(defaultConfig);
     });
     after(function () {
         spy.restore();
@@ -47,11 +47,11 @@ describe("Logging", function(){
     });
     it("Does not log when level = info & log msg is WARN", function(){
         logger.log("warn", "Not found");
-        sinon.assert.notCalled(spy);
+        _assert.notCalled(spy);
     });
     it("DOES log after the log level is rest", function(){
         logger.log("warn", "Not found");
-        sinon.assert.notCalled(spy);
+        _assert.notCalled(spy);
         logger.setLevel("warn");
         logger.log("warn", "Not found");
         var actual   = arg(spy, 0, 0);
@@ -59,11 +59,11 @@ describe("Logging", function(){
         assert.equal(actual, expected);
         logger.setLevel("error");
         logger.log("info", "Welcome!");
-        sinon.assert.calledOnce(spy);
+        _assert.calledOnce(spy);
     });
     it("Can remove the prefix", function(){
         logger.unprefixed("info", "<script></script>");
-        sinon.assert.calledWithExactly(spy, "<script></script>");
+        _assert.calledWithExactly(spy, "<script></script>");
     });
     it("Can remove the level prefixes", function(){
         logger.setLevelPrefixes(true);
@@ -134,7 +134,7 @@ describe("Logging", function(){
         assert.equal(actual, expected);
     });
     it("Can append to existing prefix via callback", function(){
-        var logger = new easyLogger.Logger(defaultConfig);
+        var logger = new Logger(defaultConfig);
         var clone = logger.clone(function (config) {
             config.prefix = config.prefix + "[new module] ";
             return config;
@@ -145,7 +145,7 @@ describe("Logging", function(){
         assert.equal(actual, expected);
     });
     it("Can append to existing prefix via callback with level prefixes", function(){
-        var logger = new easyLogger.Logger(defaultConfig);
+        var logger = new Logger(defaultConfig);
         var clone = logger.clone(function (config) {
             config.prefix = config.prefix + "[new module] ";
             return config;
@@ -157,7 +157,7 @@ describe("Logging", function(){
         assert.equal(actual, expected);
     });
     it("can use built-in string replacement", function(){
-        var logger = new easyLogger.Logger(defaultConfig);
+        var logger = new Logger(defaultConfig);
         logger.setLevelPrefixes(true);
         logger.log("info", "<script src=\"%s\"></script>", "http://shakyshane.com/js.js");
 
@@ -171,7 +171,7 @@ describe("Logging", function(){
 
     });
     it("can use built-in string replacement (2)", function(){
-        var logger = new easyLogger.Logger(defaultConfig);
+        var logger = new Logger(defaultConfig);
         logger.setLevelPrefixes(true);
         logger.log("info", "<script src=\"%s%s\"></script>", "http://shakyshane.com/", "js.js");
         var actual   = arg(spy, 0, 0);
@@ -183,11 +183,11 @@ describe("Logging", function(){
         assert.equal(actual, "js.js");
     });
     it("can be used with no configuration", function () {
-        var logger = new easyLogger.Logger(defaultConfig);
+        var logger = new Logger(defaultConfig);
         logger.log("no config");
     });
     it("can use alias methods (INFO)", function () {
-        var logger = new easyLogger.Logger(defaultConfig);
+        var logger = new Logger(defaultConfig);
         logger.setLevelPrefixes(true);
         logger.info("<script></script>");
         var actual   = arg(spy, 0, 0);
@@ -195,7 +195,7 @@ describe("Logging", function(){
         assert.equal(actual, expected);
     });
     it("can use alias methods (INFO)", function () {
-        var logger = new easyLogger.Logger(defaultConfig);
+        var logger = new Logger(defaultConfig);
         logger.setLevelPrefixes(true);
         logger.info("<script></script>");
         var actual   = arg(spy, 0, 0);
@@ -203,14 +203,14 @@ describe("Logging", function(){
         assert.equal(actual, expected);
     });
     it("can chain from alias methods", function () {
-        var logger = new easyLogger.Logger(defaultConfig);
+        var logger = new Logger(defaultConfig);
         logger.setLevelPrefixes(true).info("<script></script>").setLevelPrefixes(false);
         var actual   = arg(spy, 0, 0);
         var expected = "[logger] INFO <script></script>";
         assert.equal(actual, expected);
     });
     it("can set an option once", function () {
-        var logger = new easyLogger.Logger(defaultConfig);
+        var logger = new Logger(defaultConfig);
         logger.setOnce("useLevelPrefixes", true).info("<script></script>");
         var actual   = arg(spy, 0, 0);
         var expected = "[logger] INFO <script></script>";
@@ -222,7 +222,7 @@ describe("Logging", function(){
         assert.equal(actual, expected);
     });
     it("can set an option once multiple times", function () {
-        var logger = new easyLogger.Logger(defaultConfig);
+        var logger = new Logger(defaultConfig);
         logger.setOnce("useLevelPrefixes", true);
         logger.setOnce("useLevelPrefixes", true);
         logger.info("<script></script>");
@@ -237,16 +237,16 @@ describe("Logging", function(){
         assert.equal(actual, expected);
     });
     it("can be muted", function () {
-        var logger = new easyLogger.Logger(defaultConfig);
+        var logger = new Logger(defaultConfig);
         logger.mute(true);
         logger.info("<script></script>");
-        sinon.assert.notCalled(spy);
+        _assert.notCalled(spy);
     });
     it("can be un-muted", function () {
-        var logger = new easyLogger.Logger(defaultConfig);
+        var logger = new Logger(defaultConfig);
         logger.mute(true);
         logger.info("<script></script>");
-        sinon.assert.notCalled(spy);
+        _assert.notCalled(spy);
         logger.mute(false);
         logger.info("<script></script>");
         var actual   = arg(spy, 0, 0);
@@ -254,7 +254,7 @@ describe("Logging", function(){
         assert.equal(actual, expected);
     });
     it("can accept a function for the prefix", function(){
-        var logger = new easyLogger.Logger({
+        var logger = new Logger({
             prefix: function () {
                 return "PREFIX";
             }
@@ -266,7 +266,7 @@ describe("Logging", function(){
         assert.equal(actual, expected);
     });
     it("can SET a function for the prefix", function(){
-        var logger = new easyLogger.Logger(defaultConfig);
+        var logger = new Logger(defaultConfig);
         logger.setPrefix(function () {
             return "PREFIX";
         });
@@ -277,7 +277,7 @@ describe("Logging", function(){
         assert.equal(actual, expected);
     });
     it("can update the prefix", function(){
-        var logger = new easyLogger.Logger(defaultConfig);
+        var logger = new Logger(defaultConfig);
         logger.setPrefix("SHANE");
         logger.info("<script></script>");
 
@@ -286,7 +286,7 @@ describe("Logging", function(){
         assert.equal(actual, expected);
     });
     it("can update the prefix with color included", function(){
-        var logger = new easyLogger.Logger(defaultConfig);
+        var logger = new Logger(defaultConfig);
         logger.info("<script></script>");
 
         var actual   = arg(spy, 0, 0);
@@ -300,7 +300,7 @@ describe("Logging", function(){
         assert.equal(actual, expected);
     });
     it("can print javascript", function(){
-        var logger = new easyLogger.Logger(defaultConfig);
+        var logger = new Logger(defaultConfig);
         logger.info(`(function() { console.log("lol!") })()`);
 
         var actual   = arg(spy, 0, 0);

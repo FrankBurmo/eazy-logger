@@ -3,6 +3,7 @@
   "description": "Simple cli logger",
   "version": "4.0.1",
   "homepage": "https://github.com/shakyshane/easy-logger",
+  "type": "module",
   "author": {
     "name": "Shane Osbourne"
   },
@@ -34,7 +35,7 @@
     "lodash": "lodash include=cloneDeep,merge exports=node"
   },
   "dependencies": {
-    "chalk": "4.1.2"
+    "chalk": "5.4.1"
   },
   "devDependencies": {
     "chai": "^5.2.0",
