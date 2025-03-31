@@ -41,7 +41,7 @@
     "jshint": "^2.6.0",
     "lodash-cli": "4.17.5",
     "mocha": "^11.1.0",
-    "sinon": "^1.12.2",
+    "sinon": "^20.0.0",
     "strip-ansi": "^6.0.1"
   },
   "keywords": [
