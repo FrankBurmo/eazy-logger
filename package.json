@@ -34,7 +34,7 @@
     "lodash": "lodash include=cloneDeep,merge exports=node"
   },
   "dependencies": {
-    "chalk": "4.1.2"
+    "chalk": "5.6.2"
   },
   "devDependencies": {
     "chai": "^6.2.0",
